@@ -7,7 +7,7 @@ const PORT = 5002;
 app.use(cors());
 
 app.get('/api/hello', (req, res) => {
-    res.json({msg: 'Testing the server!'});
+    res.json({msg: 'Final Testing of the Server!!!'});
 });
 
 app.listen(PORT, () => {
