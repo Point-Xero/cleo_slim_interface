@@ -20,7 +20,7 @@ body, html {
 
 .outlet{
   width: 90%;
-  background-color: #F0F0F3;
+  background-color: #2b2b2b;
   border-radius: 25px 0 0 25px;
 }
 
@@ -32,7 +32,7 @@ ul{
 }
 
 li{
-  margin-bottom: 30px;
+  margin-bottom: 35px;
 }
 
 li a{
@@ -41,12 +41,15 @@ li a{
   font-size: 24px;
 }
 
-
 a:hover {
   color: darkblue; /* Change to your desired hover color */
 }
 
 a:active {
   color: red; /* Change to your desired active link color */
+}
+
+h1{
+  color: #ffffff;
 }
 
