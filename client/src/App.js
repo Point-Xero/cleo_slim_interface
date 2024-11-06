@@ -1,27 +1,46 @@
 import './App.css';
-import axios from 'axios';
-import React, { useEffect, useState } from'react';
+import * as ReactDOM from "react-dom/client";
+import { BrowserRouter as Router, Route, Routes, Outlet } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Controller from './views/Controller';
+import Default from './views/Default';
+import MusicPlayer from './views/MusicPlayer';
+import Settings from './views/Settings';
 
-
-function App() {
-  const [greeting, setGreeting] = useState('');
-
-    useEffect(() => {
-        axios.get('http://localhost:5002/api/hello')
-            .then(response => {
-                setGreeting(response.data.msg);
-                console.log('Message fetched successfully:', response.data.msg);
-            })
-            .catch(error => {
-                console.error('Error fetching the message:', error);
-            });
-    }, []);
-
-    return (
-        <div>
-            <h1>{greeting}</h1>
+const App = () => {
+  return (
+    <Router>
+      <div className='primary-container'>
+        <div className='navigation'>
+          <Navbar />
         </div>
-    );
-}
+        <div className='outlet'>
+          <Routes>
+            <Route path="/" element={<Default />} />
+            <Route path="/about" element={<Controller />} />
+            <Route path="/player" element={<MusicPlayer />} />
+            <Route path="/settings" element={<Settings />} />
+            {/* Add a parent route if you need an outlet */}
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Default />} />
+              <Route path="about" element={<Controller />} />
+              <Route path="player" element={<MusicPlayer />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
+          </Routes>
+        </div>
+      </div>
+    </Router>
+  );
+};
+
+// Create a layout component to include Outlet
+const Layout = () => {
+  return (
+    <>
+      <Outlet />
+    </>
+  );
+};
 
 export default App;
