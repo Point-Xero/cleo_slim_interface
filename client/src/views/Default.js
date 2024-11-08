@@ -1,36 +1,36 @@
-import React from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 function Default() {
-    // Function to handle the reboot
-    const handleReboot = () => {
-        // Ask for user confirmation
-        const confirmReboot = window.confirm("Are you sure you want to reboot the Raspberry Pi?");
-        
-        // If the user confirms, proceed with the reboot
-        if (confirmReboot) {
-            axios.get('http://localhost:5002/reboot')
-                .then(response => {
-                    alert(response.data); // Show success message from server
-                })
-                .catch(error => {
-                    alert('Failed to reboot the system.');
-                    console.error('Error:', error);
-                });
-        } else {
-            alert("Reboot canceled.");
-        }
-    };
+    const [buttonPressed, setButtonPressed] = useState(false);
+
+    useEffect(() => {
+        // Connect to the WebSocket server
+        const ws = new WebSocket('ws://localhost:5002');
+
+        ws.onopen = () => {
+            console.log('Connected to WebSocket server');
+        };
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            // Check if the message contains button state
+            if (data.buttonPressed !== undefined) {
+                setButtonPressed(data.buttonPressed === 1);
+            }
+        };
+
+        ws.onclose = () => {
+            console.log('Disconnected from WebSocket server');
+        };
+
+        // Cleanup WebSocket connection on component unmount
+        return () => ws.close();
+    }, []);
 
     return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
             <h1>Default Screen</h1>
-            <button 
-                onClick={handleReboot} 
-                style={{ fontSize: '20px', padding: '10px 20px', backgroundColor: '#007BFF', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
-            >
-                Reboot Now
-            </button>
+            <p>The button is {buttonPressed ? 'pressed' : 'not pressed'}</p>
         </div>
     );
 }
