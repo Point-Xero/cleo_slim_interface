@@ -2,20 +2,46 @@ const express = require('express');
 const { exec } = require('child_process');
 const axios = require('axios');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 const os = require('os');
+const cron = require('node-cron');
+const moment = require('moment-timezone');
 
 const app = express();
 const PORT = process.env.PORT || 5002;
 app.use(cors());
 
-// Conditionally require 'onoff' and set up GPIO only if on Linux
-// let Gpio, button;
-// if (os.platform() === 'linux') {
-//     Gpio = require('onoff').Gpio;
-//     button = new Gpio(18, 'in', 'both'); // Example GPIO setup for Linux
-// } else {
-//     console.warn('GPIO is only supported on Linux. Skipping GPIO setup.');
-// }
+// Function to check for updates
+const checkForUpdates = async () => {
+    try {
+        const REPO_OWNER = 'point-xero';
+        const REPO_NAME = 'cleo_slim_interface';
+
+        // Fetch the latest version number from GitHub's version.txt file
+        const response = await axios.get(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/version.txt`);
+        const latestVersion = response.data.trim();
+
+        // Read the local version number from the local version.txt file
+        const localVersionPath = path.join(__dirname, '../version.txt'); // Make sure this path is correct
+        const localVersion = fs.readFileSync(localVersionPath, 'utf8').trim();
+
+        // Determine if there are updates by comparing version numbers
+        const hasUpdates = localVersion !== latestVersion;
+
+        console.log(`Checked for updates: ${hasUpdates ? 'Update available' : 'Up to date'}`);
+    } catch (error) {
+        console.error('Error checking for updates:', error);
+    }
+};
+
+// Schedule the version check to run every day at midnight in your preferred timezone
+cron.schedule('0 0 * * *', () => {
+    console.log('Running scheduled update check at midnight...');
+    checkForUpdates();
+}, {
+    timezone: "Europe/Nicosia"
+});
 
 // Endpoint to reboot the system
 app.get('/reboot', (req, res) => {
@@ -34,25 +60,40 @@ app.get('/reboot', (req, res) => {
     });
 });
 
+// Endpoint to check for updates with detailed version information
+app.get('/api/check-updates', async (req, res) => {
+    try {
+        const REPO_OWNER = 'point-xero';
+        const REPO_NAME = 'cleo_slim_interface';
+
+        // Fetch the latest version number from GitHub's version.txt file
+        const response = await axios.get(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/version.txt`);
+        const latestVersion = response.data.trim();
+
+        // Read the local version number from the local version.txt file
+        const localVersionPath = path.join(__dirname, '../version.txt'); // Make sure this path is correct
+        const localVersion = fs.readFileSync(localVersionPath, 'utf8').trim();
+
+        // Determine if there are updates by comparing version numbers
+        const hasUpdates = localVersion !== latestVersion;
+
+        // Respond with detailed update info
+        res.json({
+            hasUpdates,
+            latestVersion,
+            currentVersion: localVersion,
+            lastUpdateDate: new Date().toISOString(), // Optional: You could add actual update date if needed
+            updateDescription: hasUpdates ? 'New features and improvements are available' : 'You are on the latest version'
+        });
+    } catch (error) {
+        console.error('Error checking for updates:', error);
+        res.status(500).json({ error: 'Failed to check for updates' });
+    }
+});
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+    // Initial check on startup
+    checkForUpdates();
 });
-
-// if (button) {
-//     // Set up WebSocket and GPIO logic here
-//     button.watch((err, value) => {
-//         if (err) {
-//             console.error('Error with GPIO:', err);
-//             return;
-//         }
-//         console.log(`Button pressed! Value: ${value}`);
-//     });
-// }
-
-// // Clean up GPIO on exit if GPIO was initialized
-// process.on('SIGINT', () => {
-//     if (button) button.unexport();
-//     console.log('Exiting and releasing GPIO');
-//     process.exit();
-// });
