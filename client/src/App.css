@@ -92,3 +92,7 @@ h1 {
   background-color: var(--overlay-bg-color);
   z-index: 9;
 }
+
+.versioning p{
+  color: #ffffff !important;
+}

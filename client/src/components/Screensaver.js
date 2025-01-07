@@ -1,6 +1,7 @@
 // Overlay.js
 import React, { useState, useEffect } from 'react';
 import './Screensaver.css';
+import { Grid } from '@mui/material';
 
 const Screensaver = ({ onClick }) => {
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -64,18 +65,26 @@ const Screensaver = ({ onClick }) => {
             {currentTime.toLocaleTimeString()}
         </div>
         <div className="weather">
-            <p>Current Temperature: {weather.temp !== null ? `${(weather.temp - 273.15).toFixed(1)}°C` : 'Loading...'}</p>
-            <p>Feels Like: {weather.feels_like !== null ? `${(weather.feels_like - 273.15).toFixed(1)}°C` : 'Loading...'}</p>
-            <p>Min Temperature: {weather.temp_min !== null ? `${(weather.temp_min - 273.15).toFixed(1)}°C` : 'Loading...'}</p>
-            <p>Max Temperature: {weather.temp_max !== null ? `${(weather.temp_max - 273.15).toFixed(1)}°C` : 'Loading...'}</p>
-            <p>Humidity: {weather.humidity !== null ? `${weather.humidity}%` : 'Loading...'}</p>
-            <p>Condition: {weather.condition || 'Loading...'}</p>
-            <p>Description: {weather.description || 'Loading...'}</p>
-            <p>Wind Speed: {weather.wind_speed !== null ? `${weather.wind_speed} m/s` : 'Loading...'}</p>
-            <p>Wind Direction: {weather.wind_deg !== null ? `${weather.wind_deg}°` : 'Loading...'}</p>
-            <p>Location: {weather.city && weather.country ? `${weather.city}, ${weather.country}` : 'Loading...'}</p>
-            <p>Sunrise: {weather.sunrise ? new Date(weather.sunrise * 1000).toLocaleTimeString() : 'Loading...'}</p>
-            <p>Sunset: {weather.sunset ? new Date(weather.sunset * 1000).toLocaleTimeString() : 'Loading...'}</p>
+            <Grid container spacing={2}>
+                <Grid item  xs={6}>
+                    <p>Current Temperature: {weather.temp !== null ? `${(weather.temp - 273.15).toFixed(1)}°C` : 'Loading...'}</p>
+                    <p>Feels Like: {weather.feels_like !== null ? `${(weather.feels_like - 273.15).toFixed(1)}°C` : 'Loading...'}</p>
+                    <p>Min Temperature: {weather.temp_min !== null ? `${(weather.temp_min - 273.15).toFixed(1)}°C` : 'Loading...'}</p>
+                    <p>Max Temperature: {weather.temp_max !== null ? `${(weather.temp_max - 273.15).toFixed(1)}°C` : 'Loading...'}</p>
+                    <p>Humidity: {weather.humidity !== null ? `${weather.humidity}%` : 'Loading...'}</p>
+                    <p>Condition: {weather.condition || 'Loading...'}</p>
+                </Grid>
+                <Grid item  xs={6}>
+                    <p>Description: {weather.description || 'Loading...'}</p>
+                    <p>Wind Speed: {weather.wind_speed !== null ? `${weather.wind_speed} m/s` : 'Loading...'}</p>
+                    <p>Wind Direction: {weather.wind_deg !== null ? `${weather.wind_deg}°` : 'Loading...'}</p>
+                    <p>Location: {weather.city && weather.country ? `${weather.city}, ${weather.country}` : 'Loading...'}</p>
+                    <p>Sunrise: {weather.sunrise ? new Date(weather.sunrise * 1000).toLocaleTimeString() : 'Loading...'}</p>
+                    <p>Sunset: {weather.sunset ? new Date(weather.sunset * 1000).toLocaleTimeString() : 'Loading...'}</p>
+                </Grid>
+            </Grid>
+            
+            
         </div>
         </div>
     );

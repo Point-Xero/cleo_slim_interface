@@ -8,6 +8,11 @@ import Default from './views/Default';
 import MusicPlayer from './views/MusicPlayer';
 import Settings from './views/Settings';
 import Screensaver from './components/Screensaver';
+import GuestRoom from './sub-views/GuestRoom';
+import Bathroom from './sub-views/Bathroom';
+import Outdoor from './sub-views/Outdoor';
+import Alarm from './sub-views/Alarm';
+import { Navigate } from 'react-router-dom';
 
 const App = () => {
   const [showOverlay, setShowOverlay] = useState(false);
@@ -39,13 +44,19 @@ const App = () => {
     <>
       {showOverlay && <Screensaver onClick={() => setShowOverlay(false)} />}
       <Router>
-        <div className='primary-container'>
-          <div className='navigation'>
+        <div className="primary-container">
+          <div className="navigation">
             <Navbar />
           </div>
-          <div className='outlet'>
+          <div className="outlet">
             <Routes>
-              <Route path="/" element={<Default />} />
+              <Route path="/" element={<Default />}>
+                <Route index element={<Navigate to="guestroom" replace />} />
+                <Route path="guestroom" element={<GuestRoom />} />
+                <Route path="bathroom" element={<Bathroom />} />
+                <Route path="outdoor" element={<Outdoor />} />
+                <Route path="alarm" element={<Alarm />} />
+              </Route>
               <Route path="/about" element={<Controller />} />
               <Route path="/player" element={<MusicPlayer />} />
               <Route path="/settings" element={<Settings />} />
