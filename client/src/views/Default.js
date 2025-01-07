@@ -5,49 +5,6 @@ import '../sub-views/css/sub-view-global.css';
 
 
 function Default() {
-    const [elementOneState, setElementOneState] = useState("OFF");
-    const [elementTwoState, setElementTwoState] = useState("OFF");
-    const [temperature, setTemperature] = useState("--");
-  
-    // MQTT Connection Setup
-    useEffect(() => {
-      const client = mqtt.connect("mqtt://192.168.0.150", {
-        username: "mike",
-        password: "shardadmin",
-      });
-  
-      client.on("connect", () => {
-        console.log("Connected to MQTT Broker");
-        client.subscribe("sensors/temperature", (err) => {
-          if (err) console.error("Failed to subscribe to temperature topic");
-        });
-      });
-  
-      client.on("message", (topic, message) => {
-        if (topic === "sensors/temperature") {
-          setTemperature(message.toString());
-        }
-      });
-  
-      return () => {
-        client.end();
-      };
-    }, []);
-  
-    // Publish Function
-    const sendCommand = (topic, message) => {
-      const client = mqtt.connect("mqtt://192.168.0.150", {
-        username: "mike",
-        password: "shardadmin",
-      });
-  
-      client.publish(topic, message, {}, (err) => {
-        if (err) console.error("Failed to publish MQTT message");
-        client.end();
-      });
-  
-      client.end();
-    };
 
     return (
     
